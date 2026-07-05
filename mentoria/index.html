@@ -51,7 +51,7 @@ p{font-size:16px;color:var(--ink-soft)}
 .btn-outline{background:transparent;color:var(--borgona);border:1.5px solid var(--borgona)}
 .btn-outline:hover{background:var(--rosa-pal)}
 .btn-xl{font-size:16.5px;padding:20px 44px;border-radius:20px}
-.btn-block{width:100%}
+.btn-block{width:100%;white-space:normal;text-align:center;line-height:1.35}
 
 /* ARCH MOTIF */
 .arch-bg{position:absolute;pointer-events:none}
@@ -200,6 +200,8 @@ p{font-size:16px;color:var(--ink-soft)}
 }
 @media(max-width:600px){
   .nest-grid{grid-template-columns:1fr}
+  .btn-block{padding-left:18px;padding-right:18px;font-size:14px}
+  .btn-xl.btn-block{font-size:15px;padding:18px}
 }
 </style>
 </head>
@@ -410,7 +412,13 @@ p{font-size:16px;color:var(--ink-soft)}
         <div class="inv-item">Plan de acción después de cada encuentro</div>
         <div class="inv-item">Acompañamiento real hasta que tu negocio camine solo</div>
       </div>
-      <a href="#" class="btn btn-primary btn-block btn-xl">Quiero empezar las 4 sesiones</a>
+      <div class="cta-group" data-fx-group="uyu">
+        <a href="https://mpago.la/1Mt6t4L" target="_blank" rel="noopener" class="btn btn-primary btn-block btn-xl">Pagar con MercadoPago</a>
+        <a href="https://wa.me/59898535345?text=Hola%20Fiorella!%20Quiero%20empezar%20el%20Programa%20Completo%20(4%20sesiones)%20y%20pagar%20por%20transferencia." target="_blank" rel="noopener" class="btn btn-outline btn-block" style="margin-top:12px">Prefiero transferencia — coordinar por WhatsApp</a>
+      </div>
+      <div class="cta-group" data-fx-group="usd">
+        <div id="paypal-container-YRRFBNBFV3CKL" style="margin-top:4px;min-height:44px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink-light)">Cargando botón de pago…</div>
+      </div>
 
       <div class="inv-diag-link">
         <p>¿Todavía no estás segura? Empezá por acá.</p>
@@ -420,7 +428,13 @@ p{font-size:16px;color:var(--ink-soft)}
             <span class="inv-diag-price"><span class="amt" data-uyu="1800">$UY 1.800</span></span>
           </div>
           <p>Una sesión de 90 minutos donde vemos juntas qué está frenando tu negocio hoy. Si después seguís con el programa completo, los <span class="amt" data-uyu="1800">$UY 1.800</span> se descuentan — te queda pagando <span class="amt" data-uyu="14200">$UY 14.200</span> por las 3 sesiones que faltan.</p>
-          <a href="#" class="btn btn-outline btn-block">Quiero agendar mi diagnóstico</a>
+          <div class="cta-group" data-fx-group="uyu">
+            <a href="https://mpago.la/1Bqk6gS" target="_blank" rel="noopener" class="btn btn-outline btn-block">Pagar diagnóstico con MercadoPago</a>
+            <a href="https://wa.me/59898535345?text=Hola%20Fiorella!%20Quiero%20agendar%20el%20Diagn%C3%B3stico%20Estrat%C3%A9gico%20y%20pagar%20por%20transferencia." target="_blank" rel="noopener" class="btn btn-outline btn-block" style="margin-top:10px">Transferencia — coordinar por WhatsApp</a>
+          </div>
+          <div class="cta-group" data-fx-group="usd">
+            <div id="paypal-container-E5BEHC9ZKF2QG" style="margin-top:4px;min-height:44px;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--ink-light)">Cargando botón de pago…</div>
+          </div>
         </div>
       </div>
 
@@ -461,11 +475,14 @@ p{font-size:16px;color:var(--ink-soft)}
     document.querySelectorAll('.fx-btn').forEach(function(btn){
       btn.classList.toggle('active', btn.getAttribute('data-fx') === mode);
     });
+    document.querySelectorAll('[data-fx-group]').forEach(function(el){
+      el.style.display = el.getAttribute('data-fx-group') === mode ? '' : 'none';
+    });
     var note = document.getElementById('fxNote');
     if(note){
       note.textContent = mode === 'uyu'
         ? 'Los precios se cobran en pesos uruguayos.'
-        : 'Referencia aproximada en USD (cotización orientativa). El cobro se realiza en pesos uruguayos al tipo de cambio del día.';
+        : 'Referencia aproximada en USD (cotización orientativa). Fuera de Uruguay, el pago se realiza por PayPal.';
     }
   }
 
@@ -490,7 +507,31 @@ p{font-size:16px;color:var(--ink-soft)}
     })
     .catch(function(){ /* se queda con el valor aproximado */ });
 })();
+
+function renderPaypalButtons(){
+  try{
+    if(window.paypal && paypal.HostedButtons){
+      paypal.HostedButtons({hostedButtonId:"YRRFBNBFV3CKL"}).render("#paypal-container-YRRFBNBFV3CKL");
+      paypal.HostedButtons({hostedButtonId:"E5BEHC9ZKF2QG"}).render("#paypal-container-E5BEHC9ZKF2QG");
+    } else {
+      paypalFallback();
+    }
+  }catch(e){
+    console.warn('No se pudo cargar PayPal', e);
+    paypalFallback();
+  }
+}
+function paypalFallback(){
+  document.querySelectorAll('#paypal-container-YRRFBNBFV3CKL, #paypal-container-E5BEHC9ZKF2QG').forEach(function(el){
+    el.innerHTML = '<a href="https://wa.me/59898535345?text=Hola%20Fiorella!%20Te%20escribo%20desde%20fuera%20de%20Uruguay%2C%20quiero%20coordinar%20el%20pago%20por%20PayPal." target="_blank" rel="noopener" class="btn btn-outline btn-block">Coordinar pago por WhatsApp</a>';
+  });
+}
+// Si a los 6 segundos el SDK no cargó (red bloqueada, adblock, etc.), mostramos la alternativa
+setTimeout(function(){
+  if(!(window.paypal && window.paypal.HostedButtons)) paypalFallback();
+}, 6000);
 </script>
+<script src="https://www.paypal.com/sdk/js?client-id=BAAmaBFOQ9xKhGABKtkBA9__HV5_MoGyVgmQ6Wa8nwZwOdQ1hUVR1WdW2p47jGbE1HEqVGCpA2ja1QJWC0&components=hosted-buttons&disable-funding=venmo&currency=USD" onload="renderPaypalButtons()" onerror="paypalFallback()"></script>
 
 </body>
 </html>
